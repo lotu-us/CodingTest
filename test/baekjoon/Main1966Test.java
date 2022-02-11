@@ -5,8 +5,6 @@ import util.TestScanInput;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class Main1966Test {
     @Test
     void test1() throws IOException {
