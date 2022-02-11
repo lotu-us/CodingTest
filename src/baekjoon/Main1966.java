@@ -44,77 +44,70 @@ public class Main1966 {
         for (int i = 0; i < testcaseCount; i++) {
             int documentCount = scanner.nextInt();
             int targetDocIndex = scanner.nextInt();
-            int targetDocImportant = 0;
-            Queue<Integer> queue = new LinkedList<>();
+            Queue<int[]> queue = new LinkedList<>();
 
-            //문서 큐에 저장, 문서의 중요도 배열에 저장
+            //문서 위치, 중요도 배열에 저장
             int[] importantArr = new int[9];
             for (int j = 0; j < documentCount; j++) {
-                 int order = scanner.nextInt();
-                 queue.add(order);
-                importantArr[order-1] = importantArr[order-1] + 1;
+                int important = scanner.nextInt();
+                queue.add(new int[]{ j, important });
 
-                 //찾는문서의 값 저장
-                if(targetDocIndex == j){
-                    targetDocImportant = order;
-                }
+                //중요도 횟수 입력
+                importantArr[important-1] = importantArr[important-1] + 1;
             }
 
-
-
-            //출력순서
-            int result = 0;
-            boolean stop = false;
-
-            //중요도 높은 순서대로 반복
-            for (int important = 8; important >= 0; important--) {
-                //중요도 동일한 문서만큼 반복
-                for (int count = importantArr[important]-1; count >= 0 ; count--) {
-
-                    //System.out.println("important : " + (important+1) + ", count : " + (count+1) + ", queue : " + queue+", targetDocIndex : "+targetDocIndex);
-
-                    //큐의 값이 현재 중요도와 같다면 삭제대상
-                    if(queue.peek() == (important+1)){
-                        //삭제
-                        queue.remove();
-
-                        //System.out.println("important : "+ (important+1) + ", targetDocValue : " + targetDocImportant+", result : "+(result+1));
-
-                        //찾는문서의 중요도가 현재 중요도와 같다면
-                        if( (important+1) >= targetDocImportant && stop == false){
-                            result++;   //출력순서 +1
-                        }
-
-                        //찾는 문서의 중요도가 현재 중요도와 같고, 찾는문서의 인덱스가 0이면 result stop
-                        if(targetDocImportant == (important+1) &&  targetDocIndex == 0){
-                            stop = true;
-                        }else{
-                            targetDocIndex--;
-                        }
-
-                    //큐의 값이 현재 중요도와 같지않다면 뒤로 밀기
-                    }else{
-                        Integer poll = queue.poll();
-                        queue.add(poll);
-                        important++;
-
-                        //찾는문서의 순서가 0번째면 맨 뒤로, 0번째가 아니면 -1
-                        if(targetDocIndex != 0){
-                            targetDocIndex--;
-                        }else{
-                            targetDocIndex = queue.size()-1;
-                        }
-                    }
-
-                }
-            }
-            //System.out.println();
-            //System.out.println("-------------------------"+result+"------------------------------");
-            System.out.println(result);
-
+            int process = process(importantArr, queue, targetDocIndex);
+            System.out.println(process);
 
         }
 
+    }
+
+    public static int process(int[] importantArr, Queue<int[]> queue, int targetDocIndex){
+        //몇번째 출력인지
+        int result = 0;
+
+        //System.out.println("중요도 등장횟수 : " + Arrays.toString(importantArr));
+
+        //중요도 높은 순서대로 반복
+        for (int important=9; important > 0; important--) {
+
+            //중요도 등장횟수만큼 반복
+            for (int count = importantArr[important-1]; count > 0; count--) {
+                //System.out.println("현재 중요도 : "+important + ", 등장횟수 : "+count + ", " + print(queue));
+
+                //현재 중요도와 문서의 중요도가 일치하면 remove
+                if(important == queue.peek()[1]){
+                    result++;
+                    //찾는 문서의 번호
+                    if(targetDocIndex == queue.peek()[0]){
+                        //System.out.println("*********** result : " + result);
+                        return result;
+                    }
+                    queue.remove();
+
+                }else{  //현재 중요도와 문서의 중요도가 일치하지 않다면 뒤로 보내기
+                    queue.add(queue.poll());
+
+                    //중요도에 해당하는 문서를 지우기 전까지는 루프돌기
+                    count++;
+
+                }
+
+            }
+
+        }
+        return 0;
+    }
+
+
+    public static String print(Queue<int[]> queue){
+        StringBuilder sb = new StringBuilder();
+        sb.append("queue : ");
+        for (int[] o : queue) {
+            sb.append(Arrays.toString(o)+", ");
+        }
+        return sb.toString();
     }
 
 }
