@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
-public class Main2606 {
+public class Main2606_dfs {
     /*
     7       //컴퓨터의 수
     6       //네트워크에 연결되어있는 컴퓨터 쌍의 수
